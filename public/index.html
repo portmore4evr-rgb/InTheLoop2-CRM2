@@ -81,7 +81,7 @@
   <!-- ANALYTICS VIEW -->
   <section id="view-analytics" class="hidden">
     <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-4">Analytics</p>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
       <div class="card p-5">
         <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-2">Total Leads</p>
         <p id="kpi-total" class="font-mono text-3xl font-semibold">0</p>
@@ -97,6 +97,16 @@
       <div class="card p-5">
         <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-2">Deals Closed (30d)</p>
         <p id="kpi-deals" class="font-mono text-3xl font-semibold">0</p>
+      </div>
+    </div>
+    <div class="grid sm:grid-cols-2 gap-5 mb-8">
+      <div class="card p-5 border-2 border-teal/40">
+        <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-2">Total Diners Captured (All Restaurants)</p>
+        <p id="kpi-customers" class="font-mono text-3xl font-semibold text-teal">0</p>
+      </div>
+      <div class="card p-5 border-2 border-amber/40">
+        <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-2">Total Redemptions (All Restaurants)</p>
+        <p id="kpi-redemptions" class="font-mono text-3xl font-semibold text-amber">0</p>
       </div>
     </div>
 
@@ -168,6 +178,27 @@
         <button type="button" id="btn-delete" class="hidden border border-brick text-brick px-4 py-2.5 rounded font-semibold hover:bg-brick hover:text-bg transition">Delete</button>
       </div>
     </form>
+
+    <div id="customers-section" class="hidden mt-6 pt-6 border-t border-hair">
+      <h3 class="font-display font-800 text-xl mb-1">Customer Check-In Link</h3>
+      <p class="text-inkmute text-sm mb-4">Point a QR code or NFC tag at this link — it's the page their customers actually see.</p>
+      <div class="flex flex-col sm:flex-row gap-4 items-start mb-6">
+        <img id="checkin-qr" src="" alt="Check-in QR code" class="rounded-lg border border-hair w-32 h-32">
+        <div class="flex-1 w-full">
+          <button id="btn-copy-checkin" class="border border-teal text-teal rounded-lg px-4 py-2 font-semibold text-sm mb-2 hover:bg-teal hover:text-bg transition">Copy link</button>
+          <div id="checkin-link-display" class="bg-bg border border-hair rounded-lg px-3 py-2 font-mono text-xs text-inkmute break-all"></div>
+        </div>
+      </div>
+
+      <h3 class="font-display font-800 text-xl mb-1">Customers <span id="customers-count" class="text-inkmute font-body font-normal text-sm"></span></h3>
+      <p class="text-inkmute text-sm mb-4">Everyone who's checked in at this restaurant.</p>
+      <div id="customers-list" class="space-y-2 mb-4 max-h-56 overflow-y-auto"></div>
+      <div class="grid grid-cols-[1fr_1fr_auto] gap-2">
+        <input id="cust-name" type="text" placeholder="Name" class="bg-bg border border-hair rounded px-3 py-2 text-sm focus:outline-none focus:border-teal">
+        <input id="cust-phone" type="tel" placeholder="Phone" class="bg-bg border border-hair rounded px-3 py-2 text-sm focus:outline-none focus:border-teal">
+        <button id="btn-add-customer" class="bg-teal text-bg font-semibold text-sm px-4 rounded hover:bg-amber transition">Add</button>
+      </div>
+    </div>
   </div>
 </div>
 

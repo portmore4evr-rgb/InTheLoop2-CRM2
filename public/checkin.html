@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You're In The Loop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          paper: '#F7EEDC', paper2: '#FFFBF2',
+          ink: '#1F4E49', inksoft: '#4B6F69',
+          amber: '#C98A3E', brick: '#B4472F', line: '#E3D6BC',
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          body: ['Inter', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { background-color:#F7EEDC; }
+  .ticket { position: relative; }
+  .ticket::before, .ticket::after {
+    content: ""; position: absolute; top: 50%; transform: translateY(-50%);
+    width: 26px; height: 26px; border-radius: 9999px; background: #F7EEDC; z-index: 2;
+  }
+  .ticket::before { left: -13px; }
+  .ticket::after { right: -13px; }
+  .ticket-perf { background-image: repeating-linear-gradient(90deg, #D9C69C 0 8px, transparent 8px 15px); height: 2px; }
+  .step { display: none; }
+  .step.active { display: block; }
+  @keyframes pop { from { transform: scale(0.7); opacity:0;} to { transform: scale(1); opacity:1;} }
+  .pop-in { animation: pop 0.35s ease-out; }
+</style>
+</head>
+<body class="font-body text-ink antialiased min-h-screen flex flex-col items-center">
+
+<div class="w-full max-w-md px-5 pt-8 pb-16">
+
+  <div class="text-center mb-8">
+    <p class="font-mono text-[11px] uppercase tracking-[0.25em] text-inksoft mb-1">You're In The Loop</p>
+    <h1 id="restaurant-name" class="font-display italic font-600 text-3xl">Loading…</h1>
+  </div>
+
+  <!-- STEP 1: OFFER + OPT-IN -->
+  <div id="step-1" class="step active">
+    <div class="ticket bg-paper2 border border-line rounded-2xl p-7 shadow-sm mb-6">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-amber mb-2">Welcome Bundle</p>
+      <h2 id="offer-text" class="font-display font-700 text-2xl leading-tight mb-3">—</h2>
+      <p class="text-inksoft text-sm">Scan once, and you're in — deals land straight to your phone.</p>
+    </div>
+
+    <div class="ticket bg-paper2 border border-line rounded-2xl p-6">
+      <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">First Name</label>
+      <input id="name-input" type="text" placeholder="What should we call you?" class="w-full bg-paper border border-line rounded-lg px-4 py-3 mb-4 text-ink placeholder:text-inksoft/50 focus:outline-none focus:border-amber">
+      <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">Mobile Number</label>
+      <input id="phone-input" type="tel" placeholder="(555) 555-5555" class="w-full bg-paper border border-line rounded-lg px-4 py-3 mb-4 text-ink placeholder:text-inksoft/50 focus:outline-none focus:border-amber">
+      <button onclick="checkIn()" class="w-full bg-amber text-paper2 font-semibold py-3 rounded-lg hover:bg-ink transition">Unlock My Deal</button>
+      <p class="font-mono text-[10px] text-inksoft text-center mt-3">Msg & data rates may apply. Reply STOP to opt out.</p>
+      <p id="checkin-error" class="text-brick text-xs text-center mt-2 hidden"></p>
+    </div>
+  </div>
+
+  <!-- STEP 2: PASS READY -->
+  <div id="step-2" class="step">
+    <div class="ticket bg-paper2 border border-line rounded-2xl p-7 pop-in text-center">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-amber mb-2">Your Pass Is Ready</p>
+      <h2 id="pass-offer-text" class="font-display font-700 text-2xl mb-4">—</h2>
+      <div class="ticket-perf my-5"></div>
+      <p class="text-inksoft text-sm mb-6">Show this screen to your server when you're ready to redeem.</p>
+      <button onclick="redeem()" class="w-full bg-brick text-paper2 font-semibold py-4 rounded-lg hover:bg-ink transition">Redeem at the Table</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: REDEEMED -->
+  <div id="step-3" class="step">
+    <div class="ticket bg-ink text-paper2 border border-ink rounded-2xl p-7 pop-in text-center">
+      <div class="flex items-center justify-center gap-2 text-amber font-mono text-sm mb-4">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+        <span>VERIFIED · REDEEMED</span>
+      </div>
+      <p id="redeemed-offer-text" class="font-display italic text-lg mb-1">—</p>
+      <p class="text-paper2/60 text-xs font-mono">Show this to your server to confirm.</p>
+    </div>
+  </div>
+
+  <p class="text-center font-mono text-[10px] text-inksoft mt-8">Powered by InTheLoop</p>
+</div>
+
+<script src="/js/checkin.js"></script>
+</body>
+</html>

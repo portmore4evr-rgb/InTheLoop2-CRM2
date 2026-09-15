@@ -52,6 +52,17 @@ function bindEvents() {
     await refreshLeads();
     renderCurrentTab();
   });
+
+  document.getElementById('btn-copy-checkin').addEventListener('click', () => {
+    const link = document.getElementById('checkin-link-display').textContent;
+    navigator.clipboard.writeText(link).catch(() => {});
+    const btn = document.getElementById('btn-copy-checkin');
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => (btn.textContent = original), 1500);
+  });
+
+  document.getElementById('btn-add-customer').addEventListener('click', addCustomer);
 }
 
 function switchTab(tab) {
@@ -148,6 +159,8 @@ async function renderAnalytics() {
   document.getElementById('kpi-live').textContent = a.liveClients;
   document.getElementById('kpi-conversion').textContent = a.conversionRate + '%';
   document.getElementById('kpi-deals').textContent = a.dealsClosedThisMonth;
+  document.getElementById('kpi-customers').textContent = a.totalCustomers;
+  document.getElementById('kpi-redemptions').textContent = a.totalRedemptions;
 
   const maxCount = Math.max(1, ...Object.values(a.byStage));
   const funnel = document.getElementById('funnel-bars');
@@ -177,6 +190,7 @@ function openModal(id) {
   const form = document.getElementById('lead-form');
   form.reset();
   const deleteBtn = document.getElementById('btn-delete');
+  const customersSection = document.getElementById('customers-section');
 
   if (id) {
     const lead = LEADS.find((l) => l.id === id);
@@ -191,14 +205,55 @@ function openModal(id) {
     document.getElementById('f-currentOffer').value = lead.currentOffer || '';
     document.getElementById('f-notes').value = lead.notes || '';
     deleteBtn.classList.remove('hidden');
+
+    customersSection.classList.remove('hidden');
+    const checkinUrl = `${window.location.origin}/checkin/${lead.id}`;
+    document.getElementById('checkin-link-display').textContent = checkinUrl;
+    document.getElementById('checkin-qr').src =
+      `https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=14181A&bgcolor=F3EFE6&data=${encodeURIComponent(checkinUrl)}`;
+    loadCustomers(lead.id);
   } else {
     document.getElementById('modal-title').textContent = 'Add Lead';
     document.getElementById('f-id').value = '';
     document.getElementById('f-stage').value = STAGES[0];
     deleteBtn.classList.add('hidden');
+    customersSection.classList.add('hidden');
   }
 
   document.getElementById('modal-backdrop').classList.remove('hidden');
+}
+
+async function loadCustomers(restaurantId) {
+  const customers = await fetch(`/api/leads/${restaurantId}/customers`).then((r) => r.json());
+  document.getElementById('customers-count').textContent = `(${customers.length})`;
+  const list = document.getElementById('customers-list');
+  list.innerHTML = customers.length
+    ? customers.map((c) => `
+        <div class="bg-bg border border-hair rounded-lg px-3 py-2 flex items-center justify-between text-sm">
+          <div>
+            <span>${escapeHtml(c.name || 'No name')}</span>
+            <span class="text-inkmute font-mono text-xs ml-2">${escapeHtml(c.phone)}</span>
+          </div>
+          <span class="font-mono text-[11px] text-teal">${c.redemptionCount || 0} redeemed</span>
+        </div>
+      `).join('')
+    : '<p class="text-inkmute text-sm text-center py-4">No customers yet — share the check-in link above.</p>';
+}
+
+async function addCustomer() {
+  const id = document.getElementById('f-id').value;
+  if (!id) return;
+  const name = document.getElementById('cust-name').value.trim();
+  const phone = document.getElementById('cust-phone').value.trim();
+  if (!phone) return;
+  await fetch(`/api/leads/${id}/customers`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, phone }),
+  });
+  document.getElementById('cust-name').value = '';
+  document.getElementById('cust-phone').value = '';
+  loadCustomers(id);
 }
 
 function closeModal() {
