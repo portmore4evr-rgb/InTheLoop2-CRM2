@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InTheLoop — CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#14181A', panel: '#1B2022', panel2: '#20272A',
+          ink: '#F3EFE6', inkmute: '#93A29C',
+          teal: '#36BFAE', tealdim: '#1F6E64',
+          amber: '#E7A23A', brick: '#C1594B', hair: '#2C3436',
+        },
+        fontFamily: {
+          display: ['"Big Shoulders Display"', 'sans-serif'],
+          body: ['Inter', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  body { background-color:#14181A; }
+  .dot-field { background-image: radial-gradient(rgba(243,239,230,0.05) 1px, transparent 1px); background-size: 16px 16px; }
+  .card { background:#1B2022; border:1px solid #2C3436; border-radius: 0.9rem; }
+  .tab-active { background:#20272A; color:#F3EFE6; }
+  .tab-inactive { color:#93A29C; }
+  ::selection { background:#36BFAE; color:#14181A; }
+  #modal-backdrop { background: rgba(20,24,26,0.75); }
+</style>
+</head>
+<body class="font-body text-ink antialiased dot-field">
+
+<header class="border-b border-hair bg-bg/90 backdrop-blur sticky top-0 z-30">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <span class="font-display font-900 text-xl tracking-tight">IN<span class="text-teal">THE</span>LOOP <span class="text-inkmute font-body font-normal text-sm">· CRM</span></span>
+    <button id="btn-add-lead" class="bg-amber text-bg font-semibold text-sm px-4 py-2 rounded hover:bg-ink transition">+ Add Lead</button>
+  </div>
+  <nav class="max-w-6xl mx-auto px-6 flex gap-1 pb-2">
+    <button data-tab="pipeline" class="tab-btn tab-active px-4 py-2 rounded text-sm font-medium">Pipeline</button>
+    <button data-tab="restaurants" class="tab-btn tab-inactive px-4 py-2 rounded text-sm font-medium">Restaurants</button>
+    <button data-tab="analytics" class="tab-btn tab-inactive px-4 py-2 rounded text-sm font-medium">Analytics</button>
+  </nav>
+</header>
+
+<main class="max-w-6xl mx-auto px-6 py-8">
+
+  <!-- PIPELINE VIEW -->
+  <section id="view-pipeline">
+    <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-4">Lead Pipeline</p>
+    <div id="pipeline-board" class="grid gap-4" style="grid-template-columns: repeat(5, minmax(220px, 1fr)); overflow-x: auto;"></div>
+  </section>
+
+  <!-- RESTAURANTS VIEW -->
+  <section id="view-restaurants" class="hidden">
+    <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-4">Restaurant Profiles</p>
+    <div class="card overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-inkmute font-mono text-xs uppercase border-b border-hair">
+            <th class="px-5 py-3 font-medium">Restaurant</th>
+            <th class="px-5 py-3 font-medium">Contact</th>
+            <th class="px-5 py-3 font-medium">Slowest Night</th>
+            <th class="px-5 py-3 font-medium">Current Offer</th>
+            <th class="px-5 py-3 font-medium">Stage</th>
+          </tr>
+        </thead>
+        <tbody id="restaurants-tbody" class="divide-y divide-hair"></tbody>
+      </table>
+      <p id="restaurants-empty" class="text-center text-inkmute text-sm py-10 hidden">No restaurants yet — add your first lead to get started.</p>
+    </div>
+  </section>
+
+  <!-- ANALYTICS VIEW -->
+  <section id="view-analytics" class="hidden">
+    <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-4">Analytics</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+      <div class="card p-5">
+        <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-2">Total Leads</p>
+        <p id="kpi-total" class="font-mono text-3xl font-semibold">0</p>
+      </div>
+      <div class="card p-5">
+        <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-2">Live Clients</p>
+        <p id="kpi-live" class="font-mono text-3xl font-semibold text-teal">0</p>
+      </div>
+      <div class="card p-5">
+        <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-2">Conversion Rate</p>
+        <p id="kpi-conversion" class="font-mono text-3xl font-semibold text-amber">0%</p>
+      </div>
+      <div class="card p-5">
+        <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-2">Deals Closed (30d)</p>
+        <p id="kpi-deals" class="font-mono text-3xl font-semibold">0</p>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-5 gap-6">
+      <div class="lg:col-span-3 card p-6">
+        <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-6">Pipeline Funnel</p>
+        <div id="funnel-bars" class="space-y-4"></div>
+      </div>
+      <div class="lg:col-span-2 card p-6">
+        <p class="font-mono text-xs uppercase tracking-wider text-inkmute mb-4">Recent Activity</p>
+        <div id="recent-activity" class="space-y-3"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- LEAD DETAIL / ADD MODAL -->
+<div id="modal-backdrop" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4">
+  <div class="card w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-5">
+      <h2 id="modal-title" class="font-display font-800 text-2xl">Add Lead</h2>
+      <button id="modal-close" class="text-inkmute hover:text-ink text-xl leading-none">&times;</button>
+    </div>
+    <form id="lead-form" class="space-y-4">
+      <input type="hidden" id="f-id">
+      <div>
+        <label class="font-mono text-xs uppercase tracking-wider text-inkmute mb-1 block">Restaurant Name</label>
+        <input id="f-restaurantName" type="text" required class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal">
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="font-mono text-xs uppercase tracking-wider text-inkmute mb-1 block">Contact Name</label>
+          <input id="f-contactName" type="text" class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal">
+        </div>
+        <div>
+          <label class="font-mono text-xs uppercase tracking-wider text-inkmute mb-1 block">Phone</label>
+          <input id="f-phone" type="tel" class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal">
+        </div>
+      </div>
+      <div>
+        <label class="font-mono text-xs uppercase tracking-wider text-inkmute mb-1 block">Email</label>
+        <input id="f-email" type="email" class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal">
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label class="font-mono text-xs uppercase tracking-wider text-inkmute mb-1 block">Slowest Night</label>
+          <select id="f-slowestNight" class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal">
+            <option value="">—</option>
+            <option>Sunday</option><option>Monday</option><option>Tuesday</option>
+            <option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option>
+          </select>
+        </div>
+        <div>
+          <label class="font-mono text-xs uppercase tracking-wider text-inkmute mb-1 block">Stage</label>
+          <select id="f-stage" class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal"></select>
+        </div>
+      </div>
+      <div>
+        <label class="font-mono text-xs uppercase tracking-wider text-inkmute mb-1 block">Current Offer</label>
+        <input id="f-currentOffer" type="text" placeholder="e.g. Free flatbread, Mon–Thu" class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal">
+      </div>
+      <div>
+        <label class="font-mono text-xs uppercase tracking-wider text-inkmute mb-1 block">Notes</label>
+        <textarea id="f-notes" rows="3" class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal resize-none"></textarea>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="flex-1 bg-amber text-bg font-semibold py-2.5 rounded hover:bg-ink transition">Save</button>
+        <button type="button" id="btn-delete" class="hidden border border-brick text-brick px-4 py-2.5 rounded font-semibold hover:bg-brick hover:text-bg transition">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
