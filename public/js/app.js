@@ -63,6 +63,8 @@ function bindEvents() {
   });
 
   document.getElementById('btn-add-customer').addEventListener('click', addCustomer);
+  document.getElementById('btn-send-promo').addEventListener('click', sendPromotion);
+  document.getElementById('btn-add-automation').addEventListener('click', addAutomation);
 }
 
 function switchTab(tab) {
@@ -203,8 +205,17 @@ function openModal(id) {
     document.getElementById('f-slowestNight').value = lead.slowestNight || '';
     document.getElementById('f-stage').value = lead.stage;
     document.getElementById('f-currentOffer').value = lead.currentOffer || '';
+    document.getElementById('f-googleReviewLink').value = lead.googleReviewLink || '';
     document.getElementById('f-notes').value = lead.notes || '';
     deleteBtn.classList.remove('hidden');
+
+    const liveSinceEl = document.getElementById('live-since-display');
+    if (lead.liveSince) {
+      liveSinceEl.textContent = `● Live client since ${new Date(lead.liveSince).toLocaleDateString()}`;
+      liveSinceEl.classList.remove('hidden');
+    } else {
+      liveSinceEl.classList.add('hidden');
+    }
 
     customersSection.classList.remove('hidden');
     const checkinUrl = `${window.location.origin}/checkin/${lead.id}`;
@@ -212,11 +223,14 @@ function openModal(id) {
     document.getElementById('checkin-qr').src =
       `https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=14181A&bgcolor=F3EFE6&data=${encodeURIComponent(checkinUrl)}`;
     loadCustomers(lead.id);
+    loadPromotions(lead.id);
+    loadAutomations(lead.id);
   } else {
     document.getElementById('modal-title').textContent = 'Add Lead';
     document.getElementById('f-id').value = '';
     document.getElementById('f-stage').value = STAGES[0];
     deleteBtn.classList.add('hidden');
+    document.getElementById('live-since-display').classList.add('hidden');
     customersSection.classList.add('hidden');
   }
 
@@ -270,6 +284,7 @@ async function saveLead() {
     slowestNight: document.getElementById('f-slowestNight').value,
     stage: document.getElementById('f-stage').value,
     currentOffer: document.getElementById('f-currentOffer').value,
+    googleReviewLink: document.getElementById('f-googleReviewLink').value,
     notes: document.getElementById('f-notes').value,
   };
 
@@ -290,6 +305,91 @@ async function saveLead() {
   closeModal();
   await refreshLeads();
   renderCurrentTab();
+}
+
+async function loadPromotions(restaurantId) {
+  const promos = await fetch(`/api/leads/${restaurantId}/promotions`).then((r) => r.json());
+  const list = document.getElementById('promotions-list');
+  list.innerHTML = promos.length
+    ? promos.map((p) => `
+        <div class="bg-bg border border-hair rounded-lg px-3 py-2 text-sm">
+          <p class="mb-1">${escapeHtml(p.message)}</p>
+          <p class="font-mono text-[11px] text-inkmute">Sent to ${p.recipientCount} (${p.audience}) · ${new Date(p.sentAt).toLocaleString()}</p>
+        </div>
+      `).join('')
+    : '<p class="text-inkmute text-sm text-center py-4">No promotions sent yet.</p>';
+}
+
+async function sendPromotion() {
+  const id = document.getElementById('f-id').value;
+  if (!id) return;
+  const message = document.getElementById('promo-message').value.trim();
+  const audience = document.getElementById('promo-audience').value;
+  if (!message) return;
+
+  const btn = document.getElementById('btn-send-promo');
+  const original = btn.textContent;
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  const res = await fetch(`/api/leads/${id}/promotions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, audience }),
+  }).then((r) => r.json());
+
+  btn.textContent = original;
+  btn.disabled = false;
+  document.getElementById('promo-message').value = '';
+
+  const status = document.getElementById('promo-status');
+  status.textContent = res.simulated
+    ? `Simulated send to ${res.promotion.recipientCount} customer(s) — connect Twilio to send for real.`
+    : `Sent to ${res.promotion.recipientCount} customer(s).`;
+  status.classList.remove('hidden');
+  setTimeout(() => status.classList.add('hidden'), 4000);
+
+  loadPromotions(id);
+}
+
+async function loadAutomations(restaurantId) {
+  const automations = await fetch(`/api/leads/${restaurantId}/automations`).then((r) => r.json());
+  const list = document.getElementById('automations-list');
+  list.innerHTML = automations.length
+    ? automations.map((a) => `
+        <div class="bg-bg border border-hair rounded-lg px-3 py-2 flex items-center justify-between text-sm">
+          <div>
+            <p class="mb-0.5">${escapeHtml(a.message)}</p>
+            <p class="font-mono text-[11px] text-amber">Every ${a.dayOfWeek} · ${a.audience}</p>
+          </div>
+          <button data-remove-auto="${a.id}" class="text-brick text-xs hover:underline">Remove</button>
+        </div>
+      `).join('')
+    : '<p class="text-inkmute text-sm text-center py-3">No automated promotions yet.</p>';
+
+  list.querySelectorAll('[data-remove-auto]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      await fetch(`/api/leads/${restaurantId}/automations/${btn.dataset.removeAuto}`, { method: 'DELETE' });
+      loadAutomations(restaurantId);
+    });
+  });
+}
+
+async function addAutomation() {
+  const id = document.getElementById('f-id').value;
+  if (!id) return;
+  const message = document.getElementById('auto-message').value.trim();
+  const dayOfWeek = document.getElementById('auto-day').value;
+  const audience = document.getElementById('auto-audience').value;
+  if (!message) return;
+
+  await fetch(`/api/leads/${id}/automations`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, dayOfWeek, audience }),
+  });
+  document.getElementById('auto-message').value = '';
+  loadAutomations(id);
 }
 
 function escapeHtml(str) {

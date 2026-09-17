@@ -170,6 +170,11 @@
         <input id="f-currentOffer" type="text" placeholder="e.g. Free flatbread, Mon–Thu" class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal">
       </div>
       <div>
+        <label class="font-mono text-xs uppercase tracking-wider text-inkmute mb-1 block">Google Review Link</label>
+        <input id="f-googleReviewLink" type="url" placeholder="https://g.page/your-restaurant/review" class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal">
+      </div>
+      <p id="live-since-display" class="hidden font-mono text-xs text-teal">● Live client since —</p>
+      <div>
         <label class="font-mono text-xs uppercase tracking-wider text-inkmute mb-1 block">Notes</label>
         <textarea id="f-notes" rows="3" class="w-full bg-bg border border-hair rounded px-3 py-2.5 focus:outline-none focus:border-teal resize-none"></textarea>
       </div>
@@ -193,11 +198,44 @@
       <h3 class="font-display font-800 text-xl mb-1">Customers <span id="customers-count" class="text-inkmute font-body font-normal text-sm"></span></h3>
       <p class="text-inkmute text-sm mb-4">Everyone who's checked in at this restaurant.</p>
       <div id="customers-list" class="space-y-2 mb-4 max-h-56 overflow-y-auto"></div>
-      <div class="grid grid-cols-[1fr_1fr_auto] gap-2">
+      <div class="grid grid-cols-[1fr_1fr_auto] gap-2 mb-6">
         <input id="cust-name" type="text" placeholder="Name" class="bg-bg border border-hair rounded px-3 py-2 text-sm focus:outline-none focus:border-teal">
         <input id="cust-phone" type="tel" placeholder="Phone" class="bg-bg border border-hair rounded px-3 py-2 text-sm focus:outline-none focus:border-teal">
         <button id="btn-add-customer" class="bg-teal text-bg font-semibold text-sm px-4 rounded hover:bg-amber transition">Add</button>
       </div>
+
+      <h3 class="font-display font-800 text-xl mb-1">Send a Promotion</h3>
+      <p class="text-inkmute text-sm mb-3">Texts everyone in the selected audience right now. STOP opt-out is added automatically.</p>
+      <textarea id="promo-message" rows="2" placeholder="e.g. Flash deal tonight — free dessert with any entrée!" class="w-full bg-bg border border-hair rounded-lg px-3 py-2.5 text-sm mb-3 focus:outline-none focus:border-teal resize-none"></textarea>
+      <div class="flex gap-2 mb-3">
+        <select id="promo-audience" class="flex-1 bg-bg border border-hair rounded px-3 py-2 text-sm focus:outline-none focus:border-teal">
+          <option value="all">All customers</option>
+          <option value="new">New (0 redemptions)</option>
+          <option value="returning">Returning (1+ redemptions)</option>
+        </select>
+        <button id="btn-send-promo" class="bg-amber text-bg font-semibold text-sm px-5 rounded hover:bg-ink transition">Send</button>
+      </div>
+      <p id="promo-status" class="text-xs text-teal mb-4 hidden"></p>
+
+      <h3 class="font-display font-800 text-xl mb-1">Automate a Promotion</h3>
+      <p class="text-inkmute text-sm mb-3">Repeats every week on the day you pick — no manual sending required.</p>
+      <textarea id="auto-message" rows="2" placeholder="e.g. It's Wednesday — free dessert with any entrée tonight!" class="w-full bg-bg border border-hair rounded-lg px-3 py-2.5 text-sm mb-3 focus:outline-none focus:border-teal resize-none"></textarea>
+      <div class="flex gap-2 mb-3">
+        <select id="auto-day" class="bg-bg border border-hair rounded px-3 py-2 text-sm focus:outline-none focus:border-teal">
+          <option>Sunday</option><option>Monday</option><option>Tuesday</option>
+          <option selected>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option>
+        </select>
+        <select id="auto-audience" class="flex-1 bg-bg border border-hair rounded px-3 py-2 text-sm focus:outline-none focus:border-teal">
+          <option value="all">All customers</option>
+          <option value="new">New (0 redemptions)</option>
+          <option value="returning">Returning (1+ redemptions)</option>
+        </select>
+        <button id="btn-add-automation" class="bg-teal text-bg font-semibold text-sm px-4 rounded hover:bg-amber transition">Save</button>
+      </div>
+      <div id="automations-list" class="space-y-2 mb-6"></div>
+
+      <h3 class="font-display font-800 text-xl mb-1">Recent Promotions</h3>
+      <div id="promotions-list" class="space-y-2 max-h-40 overflow-y-auto"></div>
     </div>
   </div>
 </div>
