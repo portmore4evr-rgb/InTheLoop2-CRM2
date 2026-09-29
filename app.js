@@ -254,8 +254,9 @@ async function loadCustomers(restaurantId) {
             <span class="text-inkmute font-mono text-xs ml-2">${escapeHtml(c.phone)}</span>
             ${c.email ? `<span class="text-inkmute text-xs ml-2">${escapeHtml(c.email)}</span>` : ''}
             ${c.optedOut ? '<span class="text-xs text-brick ml-2">opted out</span>' : ''}
+            ${c.firstVisitLabel ? `<div class="text-inkmute text-xs mt-0.5">Joined as: ${escapeHtml(c.firstVisitLabel)}${c.lastVisitLabel && c.lastVisitLabel !== c.firstVisitLabel ? ` · Last visit: ${escapeHtml(c.lastVisitLabel)}` : ''}</div>` : ''}
           </div>
-          <span class="font-mono text-[11px] text-teal">${c.redemptionCount || 0} return visit${(c.redemptionCount || 0) === 1 ? '' : 's'}</span>
+          <span class="font-mono text-[11px] text-teal text-right">${c.checkinCount || 0} check-in${(c.checkinCount || 0) === 1 ? '' : 's'}<br>${c.redemptionCount || 0} reward${(c.redemptionCount || 0) === 1 ? '' : 's'} used</span>
         </div>
       `).join('')
     : '<p class="text-inkmute text-sm text-center py-4">No customers yet — share the check-in link above.</p>';

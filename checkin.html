@@ -61,6 +61,17 @@
     </div>
 
     <div class="ticket bg-paper2 border border-line rounded-[32px] p-6">
+      <label for="visit-input" class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">Is this your first time here?</label>
+      <select id="visit-input" class="w-full bg-paper border border-line rounded-full px-4 py-3 mb-4 text-ink focus:outline-none focus:border-amber appearance-none">
+          <option value="" disabled selected>Choose one…</option>
+          <option value="first_time">First time here</option>
+          <option value="regular">I'm a regular</option>
+          <option value="friend">A friend sent me</option>
+          <option value="takeout">Picking up takeout</option>
+          <option value="celebrating">Celebrating something 🎉</option>
+          <option value="social">Saw you on social media</option>
+          <option value="event">Here for an event / game night</option>
+      </select>
       <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">First Name</label>
       <input id="name-input" type="text" placeholder="What should we call you?" class="w-full bg-paper border border-line rounded-full px-4 py-3 mb-4 text-ink placeholder:text-inksoft/50 focus:outline-none focus:border-amber">
       <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">Mobile Number</label>
@@ -76,16 +87,58 @@
     </div>
   </div>
 
-  <!-- STEP 2: REWARD ID -->
+  <!-- STEP 2: REWARD ID (new and returning guests) -->
   <div id="step-2" class="step">
     <div class="ticket bg-paper2 border border-line rounded-[32px] p-7 pop-in text-center">
       <p id="pass-heading" class="font-mono text-[11px] uppercase tracking-widest text-amberdeep mb-2">You're In The Loop</p>
       <p class="text-inksoft text-sm mb-1">Your Reward ID</p>
       <p id="reward-id" class="font-code font-semibold text-4xl tracking-wider mb-4">—</p>
       <div class="ticket-perf my-5"></div>
-      <p class="text-inksoft text-sm mb-1">On your <b>next visit</b>, show this ID to staff to get:</p>
+      <div id="status-box" class="rounded-2xl px-4 py-3 mb-4 text-sm"></div>
       <h2 id="pass-offer-text" class="font-display text-3xl mb-4">—</h2>
-      <p class="text-inksoft text-xs">We also texted it to you. Screenshot this to keep it handy.</p>
+      <p id="pass-note" class="text-inksoft text-xs mb-5">Screenshot this to keep it handy.</p>
+      <div class="text-left border-t border-line pt-5">
+        <label for="today-visit" class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">What brings you in today?</label>
+        <select id="today-visit" class="w-full bg-paper border border-line rounded-full px-4 py-3 mb-4 text-ink focus:outline-none focus:border-amber appearance-none">
+          <option value="" disabled selected>Choose one…</option>
+          <option value="first_time">First time here</option>
+          <option value="regular">I'm a regular</option>
+          <option value="friend">A friend sent me</option>
+          <option value="takeout">Picking up takeout</option>
+          <option value="celebrating">Celebrating something 🎉</option>
+          <option value="social">Saw you on social media</option>
+          <option value="event">Here for an event / game night</option>
+        </select>
+        <p id="today-saved" class="text-okgreen text-xs text-center -mt-2 mb-2 hidden">Thanks! Saved.</p>
+      </div>
+      <button id="not-me" class="text-inksoft text-xs underline mt-2">Not you? Use different info</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: KNOWN GUEST, NEW RESTAURANT (one-tap join) -->
+  <div id="step-3" class="step">
+    <div class="ticket bg-paper2 border border-line rounded-[32px] p-7 pop-in">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-amberdeep mb-2 text-center">Welcome back to the Loop</p>
+      <h2 id="join-heading" class="font-display text-3xl text-center mb-2">Hi there!</h2>
+      <p id="join-sub" class="text-inksoft text-sm text-center mb-5">Join with the info you already gave us, no typing needed.</p>
+      <label for="join-visit" class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">Is this your first time here?</label>
+      <select id="join-visit" class="w-full bg-paper border border-line rounded-full px-4 py-3 mb-4 text-ink focus:outline-none focus:border-amber appearance-none">
+          <option value="" disabled selected>Choose one…</option>
+          <option value="first_time">First time here</option>
+          <option value="regular">I'm a regular</option>
+          <option value="friend">A friend sent me</option>
+          <option value="takeout">Picking up takeout</option>
+          <option value="celebrating">Celebrating something 🎉</option>
+          <option value="social">Saw you on social media</option>
+          <option value="event">Here for an event / game night</option>
+      </select>
+      <label class="flex items-start gap-2 text-xs text-inksoft mb-4 cursor-pointer">
+        <input id="join-consent" type="checkbox" class="mt-0.5 accent-amber w-4 h-4 shrink-0">
+        <span id="join-consent-text">Yes, text me my Reward ID and occasional offers from this restaurant. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out anytime.</span>
+      </label>
+      <button id="join-btn" class="w-full bg-amber text-paper2 font-display text-lg py-3.5 rounded-full hover:bg-amberdark transition">Unlock My Reward</button>
+      <p id="join-error" class="text-brick text-xs text-center mt-2 hidden"></p>
+      <button id="join-not-me" class="block mx-auto text-inksoft text-xs underline mt-4">Not you? Use different info</button>
     </div>
   </div>
 

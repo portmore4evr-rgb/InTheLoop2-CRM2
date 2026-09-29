@@ -34,6 +34,7 @@ function readDB() {
   if (!db.messages) db.messages = [];
   if (!db.automations) db.automations = [];
   if (!db.redemptions) db.redemptions = [];
+  if (!db.visits) db.visits = [];
   return db;
 }
 
@@ -99,6 +100,49 @@ function nextRewardId(lead, db) {
 function publicCustomer(c) {
   return { name: c.name, rewardId: c.rewardId, redemptionCount: c.redemptionCount || 0 };
 }
+
+// Why the guest is here today (dropdown on the check-in page)
+const VISIT_TYPES = {
+  first_time: 'First time here',
+  regular: "I'm a regular",
+  friend: 'A friend sent me',
+  takeout: 'Picking up takeout',
+  celebrating: 'Celebrating something',
+  social: 'Saw you on social media',
+  event: 'Here for an event / game night',
+};
+function cleanVisitType(v) { return VISIT_TYPES[v] ? v : ''; }
+
+// Secret token saved on the guest's phone so they never re-enter their info.
+function newDeviceToken() { return crypto.randomBytes(24).toString('base64url'); }
+function ensureDeviceToken(c) { if (!c.deviceToken) c.deviceToken = newDeviceToken(); return c.deviceToken; }
+
+// One logged check-in per guest per day (the latest answer wins).
+function logVisit(db, customer, visitType, via) {
+  const today = localDay(new Date());
+  let visit = db.visits.find((v) => v.customerId === customer.id && v.day === today);
+  if (visit) {
+    if (visitType) visit.visitType = visitType;
+  } else {
+    visit = { id: crypto.randomUUID(), restaurantId: customer.restaurantId, customerId: customer.id,
+              day: today, visitType: visitType || '', via, at: new Date().toISOString() };
+    db.visits.unshift(visit);
+    customer.checkinCount = (customer.checkinCount || 0) + 1;
+    customer.lastCheckinAt = visit.at;
+  }
+  if (visitType) customer.lastVisitType = visitType;
+  return visit;
+}
+
+// Status the guest sees on their pass
+function passStatus(customer) {
+  const today = localDay(new Date());
+  if (customer.lastRedemptionAt && localDay(customer.lastRedemptionAt) === today) return 'redeemed_today';
+  if (localDay(customer.optedInAt) === today) return 'joined_today';
+  return 'ready';
+}
+
+function maskPhone(p) { const d = String(p || '').replace(/\D/g, ''); return d.length >= 4 ? '•••-•••-' + d.slice(-4) : ''; }
 
 function writeDB(data) {
   fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
@@ -223,8 +267,22 @@ app.get('/api/leads/:id/customers', (req, res) => {
   const db = readDB();
   const customers = db.customers
     .filter((c) => c.restaurantId === req.params.id)
-    .sort((a, b) => new Date(b.optedInAt) - new Date(a.optedInAt));
+    .sort((a, b) => new Date(b.optedInAt) - new Date(a.optedInAt))
+    .map(({ deviceToken, ...c }) => ({
+      ...c,
+      firstVisitLabel: VISIT_TYPES[c.firstVisitType] || '',
+      lastVisitLabel: VISIT_TYPES[c.lastVisitType] || '',
+    }));
   res.json(customers);
+});
+
+// Why guests came in, per restaurant (from the check-in dropdown)
+app.get('/api/leads/:id/visit-stats', (req, res) => {
+  const db = readDB();
+  const counts = {};
+  Object.keys(VISIT_TYPES).forEach((k) => (counts[k] = 0));
+  db.visits.filter((v) => v.restaurantId === req.params.id && v.visitType).forEach((v) => counts[v.visitType]++);
+  res.json(Object.entries(counts).map(([key, count]) => ({ key, label: VISIT_TYPES[key], count })));
 });
 
 // Owner manually adding a customer from inside the CRM
@@ -274,13 +332,22 @@ app.get('/api/public/restaurant/:id', (req, res) => {
 
 app.post('/api/public/checkin', async (req, res) => {
   const db = readDB();
-  const { restaurantId, name } = req.body;
+  const { restaurantId } = req.body;
   const restaurant = db.leads.find((l) => l.id === restaurantId);
   if (!restaurant) return res.status(404).json({ error: 'Restaurant not found' });
-  const phone = normalizePhone(req.body.phone);
-  const email = normalizeEmail(req.body.email);
+  const visitType = cleanVisitType(req.body.visitType);
+
+  // A guest who already gave their info at ANOTHER restaurant can join with one tap:
+  // their phone saved token stands in for the form.
+  let name = req.body.name;
+  let phone = normalizePhone(req.body.phone);
+  let email = normalizeEmail(req.body.email);
+  if (req.body.token) {
+    const known = db.customers.find((c) => c.deviceToken && c.deviceToken === String(req.body.token));
+    if (known) { name = name || known.name; phone = phone || known.phone; email = email || known.email; }
+  }
   if (!phone) return res.status(400).json({ error: 'Please enter a valid mobile number' });
-  if (req.body.email && !email) return res.status(400).json({ error: 'Please enter a valid email' });
+  if (req.body.email && !normalizeEmail(req.body.email)) return res.status(400).json({ error: 'Please enter a valid email' });
   if (req.body.smsConsent !== true) return res.status(400).json({ error: 'Please tick the box to agree to texts' });
 
   // Same phone OR same email at this restaurant = same guest: no new ID, no double reward.
@@ -305,6 +372,7 @@ app.post('/api/public/checkin', async (req, res) => {
       consentAt: now,
       optedInAt: now,
       optedOut: false,
+      firstVisitType: visitType,
       redemptionCount: 0,
       lastRedemptionAt: null,
       followUpSentAt: null,
@@ -312,6 +380,8 @@ app.post('/api/public/checkin', async (req, res) => {
     };
     db.customers.unshift(customer);
   }
+  ensureDeviceToken(customer);
+  logVisit(db, customer, visitType, 'form');
   writeDB(db);
 
   // Welcome text with their Reward ID the moment a brand-new guest opts in.
@@ -333,10 +403,47 @@ app.post('/api/public/checkin', async (req, res) => {
 
   res.status(201).json({
     customer: publicCustomer(customer),
+    token: customer.deviceToken,
+    status: passStatus(customer),
     isNewCustomer,
     offer: restaurant.currentOffer,
     restaurantName: restaurant.restaurantName,
   });
+});
+
+// Returning guest: the check-in page sends the token saved on their phone, no form needed.
+app.post('/api/public/returning', (req, res) => {
+  const db = readDB();
+  const { restaurantId } = req.body;
+  const token = String(req.body.token || '');
+  const restaurant = db.leads.find((l) => l.id === restaurantId);
+  if (!restaurant) return res.status(404).json({ error: 'Restaurant not found' });
+  if (!token) return res.status(404).json({ error: 'unknown' });
+
+  // The token identifies the person; they may already be a member here under a different record.
+  const known = db.customers.find((c) => c.deviceToken === token);
+  if (!known) return res.status(404).json({ error: 'unknown' });
+  const here = known.restaurantId === restaurantId ? known
+    : db.customers.find((c) => c.restaurantId === restaurantId && c.phone === known.phone);
+  if (here) {
+    // Coming back on a new day = a regular, unless they pick something else in the dropdown.
+    const today = localDay(new Date());
+    const alreadyToday = db.visits.some((v) => v.customerId === here.id && v.day === today);
+    const visitType = cleanVisitType(req.body.visitType) || (alreadyToday ? '' : 'regular');
+    logVisit(db, here, visitType, 'saved_phone');
+    writeDB(db);
+    return res.json({
+      member: true,
+      customer: publicCustomer(here),
+      status: passStatus(here),
+      visitType: here.lastVisitType || '',
+      offer: restaurant.currentOffer,
+      restaurantName: restaurant.restaurantName,
+    });
+  }
+
+  // Known guest from another restaurant: offer one-tap join (they still tick consent for THIS place).
+  res.json({ member: false, knownGuest: true, name: known.name, phoneHint: maskPhone(known.phone) });
 });
 
 // Landing-page booking form -> becomes a New Lead in the CRM pipeline
