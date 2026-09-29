@@ -13,6 +13,19 @@ profiles, and tracking high-level performance across your book of business.
 
 No leads are pre-loaded — add your first one with the "+ Add Lead" button.
 
+## Reward IDs (Tap to Regular)
+- Every guest who opts in on `/checkin/<restaurantId>` (phone required, email optional, SMS consent box required)
+  gets a unique Reward ID like `MAMA-0007-K3`: restaurant code + running count + 2 random characters.
+- Same phone or email at the same restaurant = same guest: they get their existing ID back, never a second one.
+- Staff redeem on `/redeem/<restaurantId>` with the Reward ID + the restaurant's 4-digit staff PIN (shown in the CRM).
+  Rewards are for the NEXT visit: not on sign-up day, max once per guest per day. Every attempt is logged.
+- Phones are stored as +1XXXXXXXXXX so Twilio STOP replies match correctly.
+
+## Security + data
+- Set `ADMIN_PASSWORD` in Railway Variables to password-protect the CRM (guest and staff pages stay public).
+- Attach a Railway Volume mounted at `/app/data` and set `DATA_DIR=/app/data` so data survives redeploys.
+- Set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_PHONE_NUMBER` to send real texts (otherwise simulated).
+
 ## Tech stack
 - Node.js + Express (single server, serves both the API and the front end)
 - Data is stored in `data/db.json` — a flat JSON file, no external database required
