@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Staff · Redeem Reward</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    colors: { paper: '#F7EEDC', paper2: '#FFFBF2', ink: '#1F4E49', inksoft: '#4B6F69', amber: '#C98A3E', brick: '#B4472F', line: '#E3D6BC', okgreen: '#2F7D4F' },
+    fontFamily: { display: ['Fraunces', 'serif'], body: ['Inter', 'sans-serif'], mono: ['"IBM Plex Mono"', 'monospace'] },
+  } } };
+</script>
+<style>body { background-color:#F7EEDC; }</style>
+</head>
+<body class="font-body text-ink antialiased min-h-screen flex flex-col items-center">
+<div class="w-full max-w-md px-5 pt-8 pb-16">
+  <div class="text-center mb-6">
+    <p class="font-mono text-[11px] uppercase tracking-[0.25em] text-inksoft mb-1">Staff · Redeem a Reward</p>
+    <h1 id="restaurant-name" class="font-display italic text-3xl">Loading…</h1>
+  </div>
+
+  <div class="bg-paper2 border border-line rounded-2xl p-6 mb-4">
+    <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">Guest's Reward ID</label>
+    <input id="reward-input" type="text" autocapitalize="characters" autocomplete="off" placeholder="e.g. MAMA-0007-K3"
+      class="w-full bg-paper border border-line rounded-lg px-4 py-3 mb-4 font-mono text-xl tracking-wider uppercase focus:outline-none focus:border-amber">
+    <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">Staff PIN</label>
+    <input id="pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="4 digits"
+      class="w-full bg-paper border border-line rounded-lg px-4 py-3 mb-2 font-mono text-xl tracking-[0.4em] focus:outline-none focus:border-amber">
+    <label class="flex items-center gap-2 text-xs text-inksoft mb-4"><input id="remember-pin" type="checkbox" class="accent-amber" checked> Remember PIN on this device</label>
+    <button id="btn-redeem" class="w-full bg-brick text-paper2 font-semibold py-4 rounded-lg hover:bg-ink transition">Check &amp; Redeem</button>
+  </div>
+
+  <div id="result" class="hidden rounded-2xl p-6 text-center"></div>
+  <p class="text-center font-mono text-[10px] text-inksoft mt-8">Powered by InTheLoop</p>
+</div>
+<script src="/js/redeem.js"></script>
+</body>
+</html>
