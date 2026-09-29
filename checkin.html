@@ -5,36 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>You're In The Loop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
     theme: {
       extend: {
         colors: {
-          paper: '#F7EEDC', paper2: '#FFFBF2',
-          ink: '#1F4E49', inksoft: '#4B6F69',
-          amber: '#C98A3E', brick: '#B4472F', line: '#E3D6BC',
+          paper: '#f5ead8', paper2: '#f9f4ed', ink: '#201e1d', inksoft: '#645c50',
+          amber: '#c67139', amberdark: '#b2622d', amberdeep: '#8c491a', brick: '#8c491a', line: '#dcd3c4', okgreen: '#56633f',
         },
         fontFamily: {
-          display: ['Fraunces', 'serif'],
-          body: ['Inter', 'sans-serif'],
-          mono: ['"IBM Plex Mono"', 'monospace'],
+          display: ['Caprasimo', 'serif'],
+          body: ['Figtree', 'sans-serif'],
+          mono: ['Figtree', 'sans-serif'],
+          code: ['"IBM Plex Mono"', 'monospace'],
         },
       },
     },
   };
 </script>
 <style>
-  body { background-color:#F7EEDC; }
+  body { background-color:#f5ead8; }
   .ticket { position: relative; }
   .ticket::before, .ticket::after {
     content: ""; position: absolute; top: 50%; transform: translateY(-50%);
-    width: 26px; height: 26px; border-radius: 9999px; background: #F7EEDC; z-index: 2;
+    width: 26px; height: 26px; border-radius: 9999px; background: #f5ead8; z-index: 2;
   }
   .ticket::before { left: -13px; }
   .ticket::after { right: -13px; }
-  .ticket-perf { background-image: repeating-linear-gradient(90deg, #D9C69C 0 8px, transparent 8px 15px); height: 2px; }
+  .ticket-perf { background-image: repeating-linear-gradient(90deg, #c0b6a5 0 8px, transparent 8px 15px); height: 2px; }
+  :focus-visible { outline: 2px solid #c67139; outline-offset: 2px; }
+  .font-mono.uppercase { font-weight: 600; }
   .step { display: none; }
   .step.active { display: block; }
   @keyframes pop { from { transform: scale(0.7); opacity:0;} to { transform: scale(1); opacity:1;} }
@@ -47,42 +49,42 @@
 
   <div class="text-center mb-8">
     <p class="font-mono text-[11px] uppercase tracking-[0.25em] text-inksoft mb-1">You're In The Loop</p>
-    <h1 id="restaurant-name" class="font-display italic font-600 text-3xl">Loading…</h1>
+    <h1 id="restaurant-name" class="font-display text-4xl">Loading…</h1>
   </div>
 
   <!-- STEP 1: OFFER + OPT-IN -->
   <div id="step-1" class="step active">
-    <div class="ticket bg-paper2 border border-line rounded-2xl p-7 shadow-sm mb-6">
-      <p class="font-mono text-[11px] uppercase tracking-widest text-amber mb-2">Welcome Bundle</p>
-      <h2 id="offer-text" class="font-display font-700 text-2xl leading-tight mb-3">—</h2>
+    <div class="ticket bg-paper2 border border-line rounded-[32px] p-7 shadow-sm mb-6">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-amberdeep mb-2">Welcome Bundle</p>
+      <h2 id="offer-text" class="font-display text-3xl leading-tight mb-3">—</h2>
       <p class="text-inksoft text-sm">Scan once, and you're in — deals land straight to your phone.</p>
     </div>
 
-    <div class="ticket bg-paper2 border border-line rounded-2xl p-6">
+    <div class="ticket bg-paper2 border border-line rounded-[32px] p-6">
       <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">First Name</label>
-      <input id="name-input" type="text" placeholder="What should we call you?" class="w-full bg-paper border border-line rounded-lg px-4 py-3 mb-4 text-ink placeholder:text-inksoft/50 focus:outline-none focus:border-amber">
+      <input id="name-input" type="text" placeholder="What should we call you?" class="w-full bg-paper border border-line rounded-full px-4 py-3 mb-4 text-ink placeholder:text-inksoft/50 focus:outline-none focus:border-amber">
       <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">Mobile Number</label>
-      <input id="phone-input" type="tel" autocomplete="tel" placeholder="(555) 555-5555" class="w-full bg-paper border border-line rounded-lg px-4 py-3 mb-4 text-ink placeholder:text-inksoft/50 focus:outline-none focus:border-amber">
+      <input id="phone-input" type="tel" autocomplete="tel" placeholder="(555) 555-5555" class="w-full bg-paper border border-line rounded-full px-4 py-3 mb-4 text-ink placeholder:text-inksoft/50 focus:outline-none focus:border-amber">
       <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">Email <span class="normal-case tracking-normal">(optional)</span></label>
-      <input id="email-input" type="email" autocomplete="email" placeholder="you@email.com" class="w-full bg-paper border border-line rounded-lg px-4 py-3 mb-4 text-ink placeholder:text-inksoft/50 focus:outline-none focus:border-amber">
+      <input id="email-input" type="email" autocomplete="email" placeholder="you@email.com" class="w-full bg-paper border border-line rounded-full px-4 py-3 mb-4 text-ink placeholder:text-inksoft/50 focus:outline-none focus:border-amber">
       <label class="flex items-start gap-2 text-xs text-inksoft mb-4 cursor-pointer">
         <input id="consent-input" type="checkbox" class="mt-0.5 accent-amber w-4 h-4 shrink-0">
         <span id="consent-text">Yes, text me my Reward ID and occasional offers from this restaurant. Msg frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out anytime.</span>
       </label>
-      <button onclick="checkIn()" class="w-full bg-amber text-paper2 font-semibold py-3 rounded-lg hover:bg-ink transition">Unlock My Reward</button>
+      <button onclick="checkIn()" class="w-full bg-amber text-paper2 font-display text-lg py-3.5 rounded-full hover:bg-amberdark transition">Unlock My Reward</button>
       <p id="checkin-error" class="text-brick text-xs text-center mt-2 hidden"></p>
     </div>
   </div>
 
   <!-- STEP 2: REWARD ID -->
   <div id="step-2" class="step">
-    <div class="ticket bg-paper2 border border-line rounded-2xl p-7 pop-in text-center">
-      <p id="pass-heading" class="font-mono text-[11px] uppercase tracking-widest text-amber mb-2">You're In The Loop</p>
+    <div class="ticket bg-paper2 border border-line rounded-[32px] p-7 pop-in text-center">
+      <p id="pass-heading" class="font-mono text-[11px] uppercase tracking-widest text-amberdeep mb-2">You're In The Loop</p>
       <p class="text-inksoft text-sm mb-1">Your Reward ID</p>
-      <p id="reward-id" class="font-mono font-600 text-4xl tracking-wider mb-4">—</p>
+      <p id="reward-id" class="font-code font-semibold text-4xl tracking-wider mb-4">—</p>
       <div class="ticket-perf my-5"></div>
       <p class="text-inksoft text-sm mb-1">On your <b>next visit</b>, show this ID to staff to get:</p>
-      <h2 id="pass-offer-text" class="font-display font-700 text-2xl mb-4">—</h2>
+      <h2 id="pass-offer-text" class="font-display text-3xl mb-4">—</h2>
       <p class="text-inksoft text-xs">We also texted it to you. Screenshot this to keep it handy.</p>
     </div>
   </div>

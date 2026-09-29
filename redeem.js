@@ -5,9 +5,9 @@ function esc(s) { return String(s || '').replace(/[&<>"']/g, (c) => ({ '&': '&am
 
 function showResult(ok, title, detail) {
   const el = document.getElementById('result');
-  el.className = 'rounded-2xl p-6 text-center ' + (ok ? 'bg-okgreen text-paper2' : 'bg-brick text-paper2');
-  el.innerHTML = `<p class="font-mono text-sm mb-2">${ok ? '✓ VALID — GIVE THE REWARD' : '✕ DO NOT REDEEM'}</p>
-    <p class="font-display text-2xl mb-1">${esc(title)}</p><p class="text-sm opacity-90">${esc(detail)}</p>`;
+  el.className = 'rounded-[32px] p-6 text-center ' + (ok ? 'bg-okgreen text-paper2' : 'bg-brick text-paper2');
+  el.innerHTML = `<p class="font-mono uppercase tracking-wider text-sm mb-2">${ok ? '✓ VALID — GIVE THE REWARD' : '✕ DO NOT REDEEM'}</p>
+    <p class="font-display text-3xl mb-1">${esc(title)}</p><p class="text-sm opacity-90">${esc(detail)}</p>`;
   el.classList.remove('hidden');
 }
 

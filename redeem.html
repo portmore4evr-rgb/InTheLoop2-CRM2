@@ -5,35 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
 <title>Staff · Redeem Reward</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = { theme: { extend: {
-    colors: { paper: '#F7EEDC', paper2: '#FFFBF2', ink: '#1F4E49', inksoft: '#4B6F69', amber: '#C98A3E', brick: '#B4472F', line: '#E3D6BC', okgreen: '#2F7D4F' },
-    fontFamily: { display: ['Fraunces', 'serif'], body: ['Inter', 'sans-serif'], mono: ['"IBM Plex Mono"', 'monospace'] },
+    colors: {
+          paper: '#f5ead8', paper2: '#f9f4ed', ink: '#201e1d', inksoft: '#645c50',
+          amber: '#c67139', amberdark: '#b2622d', amberdeep: '#8c491a', brick: '#8c491a', line: '#dcd3c4', okgreen: '#56633f',
+        },
+        fontFamily: {
+          display: ['Caprasimo', 'serif'],
+          body: ['Figtree', 'sans-serif'],
+          mono: ['Figtree', 'sans-serif'],
+          code: ['"IBM Plex Mono"', 'monospace'],
+        },
   } } };
 </script>
-<style>body { background-color:#F7EEDC; }</style>
+<style>body { background-color:#f5ead8; } :focus-visible { outline: 2px solid #c67139; outline-offset: 2px; } .font-mono.uppercase { font-weight: 600; }</style>
 </head>
 <body class="font-body text-ink antialiased min-h-screen flex flex-col items-center">
 <div class="w-full max-w-md px-5 pt-8 pb-16">
   <div class="text-center mb-6">
     <p class="font-mono text-[11px] uppercase tracking-[0.25em] text-inksoft mb-1">Staff · Redeem a Reward</p>
-    <h1 id="restaurant-name" class="font-display italic text-3xl">Loading…</h1>
+    <h1 id="restaurant-name" class="font-display text-4xl">Loading…</h1>
   </div>
 
-  <div class="bg-paper2 border border-line rounded-2xl p-6 mb-4">
+  <div class="bg-paper2 border border-line rounded-[32px] p-6 mb-4">
     <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">Guest's Reward ID</label>
     <input id="reward-input" type="text" autocapitalize="characters" autocomplete="off" placeholder="e.g. MAMA-0007-K3"
-      class="w-full bg-paper border border-line rounded-lg px-4 py-3 mb-4 font-mono text-xl tracking-wider uppercase focus:outline-none focus:border-amber">
+      class="w-full bg-paper border border-line rounded-full px-4 py-3 mb-4 font-code text-xl tracking-wider uppercase focus:outline-none focus:border-amber">
     <label class="font-mono text-[11px] uppercase tracking-wider text-inksoft mb-2 block">Staff PIN</label>
     <input id="pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="4 digits"
-      class="w-full bg-paper border border-line rounded-lg px-4 py-3 mb-2 font-mono text-xl tracking-[0.4em] focus:outline-none focus:border-amber">
+      class="w-full bg-paper border border-line rounded-full px-4 py-3 mb-2 font-code text-xl tracking-[0.4em] focus:outline-none focus:border-amber">
     <label class="flex items-center gap-2 text-xs text-inksoft mb-4"><input id="remember-pin" type="checkbox" class="accent-amber" checked> Remember PIN on this device</label>
-    <button id="btn-redeem" class="w-full bg-brick text-paper2 font-semibold py-4 rounded-lg hover:bg-ink transition">Check &amp; Redeem</button>
+    <button id="btn-redeem" class="w-full bg-amber text-paper2 font-display text-lg py-4 rounded-full hover:bg-amberdark transition">Check &amp; Redeem</button>
   </div>
 
-  <div id="result" class="hidden rounded-2xl p-6 text-center"></div>
+  <div id="result" class="hidden rounded-[32px] p-6 text-center"></div>
   <p class="text-center font-mono text-[10px] text-inksoft mt-8">Powered by InTheLoop</p>
 </div>
 <script src="/js/redeem.js"></script>

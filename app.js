@@ -91,7 +91,7 @@ function renderPipeline() {
   board.innerHTML = STAGES.map((stage, i) => {
     const items = LEADS.filter((l) => l.stage === stage);
     return `
-      <div class="card p-3 border-2 ${stageColors[i]} flex flex-col min-h-[200px]">
+      <div class="card p-3 border-2 ${stageColors[i] === 'border-hair' ? 'border-transparent' : stageColors[i]} flex flex-col min-h-[200px]">
         <p class="font-mono text-[11px] uppercase tracking-wider text-inkmute mb-3 flex items-center justify-between">
           <span>${stage}</span><span class="text-ink">${items.length}</span>
         </p>
@@ -124,10 +124,10 @@ function renderPipeline() {
 function leadCard(lead, stageIdx) {
   const canAdvance = stageIdx < STAGES.length - 1;
   return `
-    <div class="bg-bg border border-hair rounded-lg p-3 cursor-pointer hover:border-teal transition" data-open="${lead.id}">
-      <p class="text-sm font-medium mb-1">${escapeHtml(lead.restaurantName)}</p>
+    <div class="bg-bg border border-transparent rounded-2xl p-3 cursor-pointer hover:border-amber transition" data-open="${lead.id}">
+      <p class="text-sm font-semibold mb-1">${escapeHtml(lead.restaurantName)}</p>
       <p class="text-xs text-inkmute mb-2">${escapeHtml(lead.contactName || 'No contact yet')}</p>
-      ${canAdvance ? `<button data-advance="${lead.id}" data-next-idx="${stageIdx + 1}" class="w-full font-mono text-[10px] uppercase tracking-wider border border-teal text-teal rounded py-1.5 hover:bg-teal hover:text-bg transition">Move to ${STAGES[stageIdx + 1]} →</button>` : `<span class="font-mono text-[10px] uppercase tracking-wider text-teal">● Active Client</span>`}
+      ${canAdvance ? `<button data-advance="${lead.id}" data-next-idx="${stageIdx + 1}" class="w-full font-mono text-[10px] uppercase tracking-wider border border-teal text-teal rounded-full py-1.5 hover:bg-teal hover:text-bg transition">Move to ${STAGES[stageIdx + 1]} →</button>` : `<span class="font-mono text-[10px] uppercase tracking-wider text-teal">● Active Client</span>`}
     </div>
   `;
 }
@@ -147,7 +147,7 @@ function renderRestaurants() {
       <td class="px-5 py-3 text-inkmute">${escapeHtml(l.contactName || '—')}</td>
       <td class="px-5 py-3 text-inkmute">${escapeHtml(l.slowestNight || '—')}</td>
       <td class="px-5 py-3 text-inkmute">${escapeHtml(l.currentOffer || '—')}</td>
-      <td class="px-5 py-3"><span class="font-mono text-xs px-2 py-1 rounded ${l.stage === 'Live Client' ? 'bg-teal/15 text-teal' : 'bg-hair text-inkmute'}">${l.stage}</span></td>
+      <td class="px-5 py-3"><span class="font-mono text-xs px-2 py-1 rounded-full ${l.stage === 'Live Client' ? 'bg-tealight text-teal' : 'bg-hair text-inkmute'}">${l.stage}</span></td>
     </tr>
   `).join('');
   tbody.querySelectorAll('[data-open]').forEach((el) => {
@@ -180,7 +180,7 @@ async function renderAnalytics() {
   const recentEl = document.getElementById('recent-activity');
   recentEl.innerHTML = a.recent.length
     ? a.recent.map((r) => `
-        <div class="flex justify-between items-center bg-bg border border-hair rounded-lg px-3 py-2.5 text-sm">
+        <div class="flex justify-between items-center bg-bg border border-hair rounded-2xl px-3 py-2.5 text-sm">
           <span>${escapeHtml(r.restaurantName)}</span>
           <span class="font-mono text-[11px] text-inkmute">${r.stage}</span>
         </div>
@@ -225,7 +225,7 @@ function openModal(id) {
     const checkinUrl = `${window.location.origin}/checkin/${lead.id}`;
     document.getElementById('checkin-link-display').textContent = checkinUrl;
     document.getElementById('checkin-qr').src =
-      `https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=14181A&bgcolor=F3EFE6&data=${encodeURIComponent(checkinUrl)}`;
+      `https://api.qrserver.com/v1/create-qr-code/?size=140x140&color=201e1d&bgcolor=f9f4ed&data=${encodeURIComponent(checkinUrl)}`;
     loadCustomers(lead.id);
     loadPromotions(lead.id);
     loadAutomations(lead.id);
@@ -247,9 +247,9 @@ async function loadCustomers(restaurantId) {
   const list = document.getElementById('customers-list');
   list.innerHTML = customers.length
     ? customers.map((c) => `
-        <div class="bg-bg border border-hair rounded-lg px-3 py-2 flex items-center justify-between text-sm">
+        <div class="bg-bg border border-hair rounded-2xl px-3 py-2 flex items-center justify-between text-sm">
           <div>
-            <span class="font-mono text-xs text-amber mr-2">${escapeHtml(c.rewardId || '—')}</span>
+            <span class="font-code text-xs text-amberdeep mr-2">${escapeHtml(c.rewardId || '—')}</span>
             <span>${escapeHtml(c.name || 'No name')}</span>
             <span class="text-inkmute font-mono text-xs ml-2">${escapeHtml(c.phone)}</span>
             ${c.email ? `<span class="text-inkmute text-xs ml-2">${escapeHtml(c.email)}</span>` : ''}
@@ -326,7 +326,7 @@ async function loadPromotions(restaurantId) {
   const list = document.getElementById('promotions-list');
   list.innerHTML = promos.length
     ? promos.map((p) => `
-        <div class="bg-bg border border-hair rounded-lg px-3 py-2 text-sm">
+        <div class="bg-bg border border-hair rounded-2xl px-3 py-2 text-sm">
           <p class="mb-1">${escapeHtml(p.message)}</p>
           <p class="font-mono text-[11px] text-inkmute">Sent to ${p.recipientCount} (${p.audience}) · ${new Date(p.sentAt).toLocaleString()}</p>
         </div>
@@ -371,10 +371,10 @@ async function loadAutomations(restaurantId) {
   const list = document.getElementById('automations-list');
   list.innerHTML = automations.length
     ? automations.map((a) => `
-        <div class="bg-bg border border-hair rounded-lg px-3 py-2 flex items-center justify-between text-sm">
+        <div class="bg-bg border border-hair rounded-2xl px-3 py-2 flex items-center justify-between text-sm">
           <div>
             <p class="mb-0.5">${escapeHtml(a.message)}</p>
-            <p class="font-mono text-[11px] text-amber">Every ${a.dayOfWeek} · ${a.audience}</p>
+            <p class="font-mono text-[11px] text-amberdeep">Every ${a.dayOfWeek} · ${a.audience}</p>
           </div>
           <button data-remove-auto="${a.id}" class="text-brick text-xs hover:underline">Remove</button>
         </div>

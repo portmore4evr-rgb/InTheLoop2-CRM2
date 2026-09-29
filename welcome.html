@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InTheLoop — Fill your slow nights</title>
+<meta name="description" content="InTheLoop turns first-time restaurant guests into regulars with table QR check-ins, Reward IDs and automated slow-night texts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#f5ead8', surface: '#ebddc5', paper: '#f9f4ed', ink: '#201e1d', inkmute: '#645c50', hair: '#dcd3c4',
+          amber: '#c67139', amberdark: '#b2622d', amberdeep: '#8c491a', amberlight: '#fff2eb',
+          sage: '#7a8a5e', sagedeep: '#56633f', sagelight: '#f0fae1', sageink: '#3d472b',
+        },
+        fontFamily: { display: ['Caprasimo', 'serif'], body: ['Figtree', 'sans-serif'] },
+      },
+    },
+  };
+</script>
+<style>
+  body { background-color:#f5ead8; }
+  html { scroll-behavior: smooth; }
+  ::selection { background: rgba(198,113,57,0.3); }
+  :focus-visible { outline: 2px solid #c67139; outline-offset: 2px; }
+  a { color: #8c491a; } a:hover { color: #b2622d; }
+  details summary::-webkit-details-marker { display: none; }
+  details[open] .faq-plus { transform: rotate(45deg); }
+</style>
+</head>
+<body class="font-body text-ink antialiased">
+
+<header class="max-w-6xl mx-auto px-6 py-5 flex items-center gap-6">
+  <a href="/welcome" class="font-display text-2xl text-ink hover:text-ink" style="text-decoration:none">IN<span class="text-sage">THE</span>LOOP</a>
+  <nav class="hidden md:flex gap-6 ml-auto text-[15px] font-semibold">
+    <a href="#how" class="text-ink hover:text-amber no-underline">How it works</a>
+    <a href="#trial" class="text-ink hover:text-amber no-underline">Free trial</a>
+    <a href="#faq" class="text-ink hover:text-amber no-underline">FAQ</a>
+  </nav>
+  <a href="#book" class="ml-auto md:ml-0 bg-amber text-bg font-display px-5 py-2.5 rounded-full hover:bg-amberdark hover:text-bg transition no-underline">Book a meeting</a>
+</header>
+
+<!-- HERO -->
+<section class="max-w-6xl mx-auto px-6 pt-10 pb-20 grid lg:grid-cols-12 gap-10 items-center">
+  <div class="lg:col-span-5">
+    <span class="inline-block bg-amberlight text-amberdeep text-sm font-semibold px-4 py-1.5 rounded-full mb-5">For restaurant owners</span>
+    <h1 class="font-display text-6xl md:text-7xl leading-[1.02] tracking-tight mb-5">Fill your <span class="text-amber">slow nights.</span></h1>
+    <p class="text-lg text-inkmute leading-relaxed mb-8" style="text-wrap:pretty">InTheLoop turns first-time guests into regulars. A table QR code captures every diner, texts them a reward for their next visit, and brings them back on the nights you need them.</p>
+    <div class="flex flex-wrap gap-3">
+      <a href="#book" class="bg-amber text-bg font-display text-lg px-7 py-3.5 rounded-full hover:bg-amberdark hover:text-bg transition no-underline">Book a meeting →</a>
+      <a href="#how" class="border border-hair text-ink font-display text-lg px-7 py-3.5 rounded-full hover:bg-surface transition no-underline">How it works</a>
+    </div>
+    <p class="text-sm text-inkmute mt-5">Free for 30 days.</p>
+  </div>
+  <div class="lg:col-span-7">
+    <div class="relative rounded-[36px] overflow-hidden bg-surface shadow-[0_12px_32px_rgba(46,43,37,0.22)] aspect-video">
+      <video id="vsl" class="w-full h-full object-cover" controls playsinline preload="metadata" poster="/media/intheloop-vsl-poster.jpg">
+        <source src="/media/intheloop-vsl.mp4" type="video/mp4">
+      </video>
+      <div id="vsl-missing" class="hidden absolute inset-0 flex flex-col items-start justify-end p-8 bg-surface">
+        <p class="font-display text-3xl mb-1">Video goes here</p>
+        <p class="text-inkmute text-sm">Export the VSL as MP4 and save it to <code>public/media/intheloop-vsl.mp4</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="max-w-6xl mx-auto px-6 py-20">
+  <p class="text-sm font-semibold uppercase tracking-[0.1em] text-amberdeep mb-2">How it works</p>
+  <h2 class="font-display text-5xl tracking-tight mb-12 max-w-2xl">From first visit to regular, in six steps.</h2>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-12">
+    <div class="flex gap-5"><span class="shrink-0 w-14 h-14 rounded-full bg-amber text-bg font-display text-2xl flex items-center justify-center">1</span><div><h3 class="font-display text-2xl mb-1.5">Guests join at the table</h3><p class="text-inkmute leading-relaxed">They scan a QR code or tap an NFC tag. Name, number, one tap to opt in. No app to download.</p></div></div>
+    <div class="flex gap-5"><span class="shrink-0 w-14 h-14 rounded-full bg-sage text-bg font-display text-2xl flex items-center justify-center">2</span><div><h3 class="font-display text-2xl mb-1.5">Reward ID, instantly</h3><p class="text-inkmute leading-relaxed">Every guest gets their own Reward ID on screen and by text, good for their next visit.</p></div></div>
+    <div class="flex gap-5"><span class="shrink-0 w-14 h-14 rounded-full bg-amber text-bg font-display text-2xl flex items-center justify-center">3</span><div><h3 class="font-display text-2xl mb-1.5">Staff redeem next time</h3><p class="text-inkmute leading-relaxed">Staff type the Reward ID and a 4-digit PIN on any phone or tablet. One tap confirms it's valid.</p></div></div>
+    <div class="flex gap-5"><span class="shrink-0 w-14 h-14 rounded-full bg-sage text-bg font-display text-2xl flex items-center justify-center">4</span><div><h3 class="font-display text-2xl mb-1.5">Text your guests</h3><p class="text-inkmute leading-relaxed">Send a deal to everyone, just new guests, or just regulars, and they hear from you in seconds.</p></div></div>
+    <div class="flex gap-5"><span class="shrink-0 w-14 h-14 rounded-full bg-amber text-bg font-display text-2xl flex items-center justify-center">5</span><div><h3 class="font-display text-2xl mb-1.5">Slow nights on autopilot</h3><p class="text-inkmute leading-relaxed">Pick your slowest night once. Your offer goes out every week without you lifting a finger.</p></div></div>
+    <div class="flex gap-5"><span class="shrink-0 w-14 h-14 rounded-full bg-sage text-bg font-display text-2xl flex items-center justify-center">6</span><div><h3 class="font-display text-2xl mb-1.5">One dashboard</h3><p class="text-inkmute leading-relaxed">See every diner captured and every reward redeemed, all in one place.</p></div></div>
+  </div>
+</section>
+
+<!-- WHAT YOU GET -->
+<section class="max-w-6xl mx-auto px-6 py-20">
+  <p class="text-sm font-semibold uppercase tracking-[0.1em] text-amberdeep mb-2">What your restaurant gets</p>
+  <h2 class="font-display text-5xl tracking-tight mb-12 max-w-2xl">Guests you can actually bring back.</h2>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div class="bg-surface rounded-[32px] p-7"><h3 class="font-display text-2xl mb-2">Your own guest list</h3><p class="text-inkmute leading-relaxed">Every opted-in diner's number, owned by you, not a delivery app.</p></div>
+    <div class="bg-surface rounded-[32px] p-7"><h3 class="font-display text-2xl mb-2">A reason to return</h3><p class="text-inkmute leading-relaxed">The welcome reward only works on the next visit, so it pulls guests back in.</p></div>
+    <div class="bg-surface rounded-[32px] p-7"><h3 class="font-display text-2xl mb-2">Automatic follow-ups</h3><p class="text-inkmute leading-relaxed">Guests who haven't come back after 48 hours get a friendly reminder of their offer.</p></div>
+    <div class="bg-surface rounded-[32px] p-7"><h3 class="font-display text-2xl mb-2">More Google reviews</h3><p class="text-inkmute leading-relaxed">After a redeemed visit, happy diners get a text asking for a quick review.</p></div>
+    <div class="bg-surface rounded-[32px] p-7"><h3 class="font-display text-2xl mb-2">No new hardware</h3><p class="text-inkmute leading-relaxed">A QR code or NFC tag on the table and the phone or tablet you already have.</p></div>
+    <div class="bg-surface rounded-[32px] p-7"><h3 class="font-display text-2xl mb-2">Texting done right</h3><p class="text-inkmute leading-relaxed">Guests opt in themselves, and STOP replies are handled automatically.</p></div>
+  </div>
+</section>
+
+<!-- FREE TRIAL -->
+<section id="trial" class="max-w-6xl mx-auto px-6 py-20">
+  <div class="bg-sagelight rounded-[40px] p-10 md:p-14 grid md:grid-cols-12 gap-8 items-center">
+    <div class="md:col-span-8">
+      <p class="text-sm font-semibold uppercase tracking-[0.1em] text-sagedeep mb-2">Free trial</p>
+      <h2 class="font-display text-5xl md:text-6xl tracking-tight text-sageink mb-4">30 days, on us.</h2>
+      <p class="text-lg text-sageink/80 leading-relaxed max-w-xl">Try InTheLoop free for 30 days. We'll help set up your table codes, your welcome offer and your first slow-night promo.</p>
+    </div>
+    <div class="md:col-span-4 md:justify-self-end">
+      <a href="#book" class="inline-block bg-amber text-bg font-display text-xl px-8 py-4 rounded-full hover:bg-amberdark hover:text-bg transition no-underline">Start my free trial</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="max-w-6xl mx-auto px-6 py-20 grid lg:grid-cols-12 gap-10">
+  <div class="lg:col-span-4">
+    <p class="text-sm font-semibold uppercase tracking-[0.1em] text-amberdeep mb-2">FAQ</p>
+    <h2 class="font-display text-5xl tracking-tight">Good questions.</h2>
+  </div>
+  <div class="lg:col-span-8 space-y-3">
+    <details class="bg-surface rounded-[28px] px-7 py-5"><summary class="flex items-center justify-between cursor-pointer font-display text-xl">Do my guests need to download an app?<span class="faq-plus text-amber text-2xl transition">+</span></summary><p class="text-inkmute leading-relaxed mt-3">No. The check-in page opens right in their phone's browser from the QR code or NFC tag.</p></details>
+    <details class="bg-surface rounded-[28px] px-7 py-5"><summary class="flex items-center justify-between cursor-pointer font-display text-xl">What do my staff need?<span class="faq-plus text-amber text-2xl transition">+</span></summary><p class="text-inkmute leading-relaxed mt-3">Just the redeem page bookmarked on any phone or tablet at the register, plus your restaurant's 4-digit staff PIN.</p></details>
+    <details class="bg-surface rounded-[28px] px-7 py-5"><summary class="flex items-center justify-between cursor-pointer font-display text-xl">Can a guest claim the reward twice?<span class="faq-plus text-amber text-2xl transition">+</span></summary><p class="text-inkmute leading-relaxed mt-3">No. One Reward ID per phone number or email. Rewards can't be used on the sign-up day and only once per guest per day, and every attempt is logged.</p></details>
+    <details class="bg-surface rounded-[28px] px-7 py-5"><summary class="flex items-center justify-between cursor-pointer font-display text-xl">Can guests stop the texts?<span class="faq-plus text-amber text-2xl transition">+</span></summary><p class="text-inkmute leading-relaxed mt-3">Yes. Guests opt in themselves, and replying STOP removes them automatically.</p></details>
+    <details class="bg-surface rounded-[28px] px-7 py-5"><summary class="flex items-center justify-between cursor-pointer font-display text-xl">What happens after the 30 days?<span class="faq-plus text-amber text-2xl transition">+</span></summary><p class="text-inkmute leading-relaxed mt-3">We'll walk through pricing on your call, so you can decide once you've seen it work.</p></details>
+  </div>
+</section>
+
+<!-- BOOK -->
+<section id="book" class="max-w-6xl mx-auto px-6 py-20 grid lg:grid-cols-12 gap-10 items-start">
+  <div class="lg:col-span-5">
+    <p class="text-sm font-semibold uppercase tracking-[0.1em] text-amberdeep mb-2">Book a meeting</p>
+    <h2 class="font-display text-5xl md:text-6xl tracking-tight mb-4">Let's get you in the loop.</h2>
+    <p class="text-lg text-inkmute leading-relaxed">Pick a time that works. We'll confirm by text or email and show you how it would work at your restaurant.</p>
+  </div>
+  <form id="book-form" class="lg:col-span-7 bg-surface rounded-[36px] p-8 md:p-10 space-y-5">
+    <div>
+      <label for="b-restaurant" class="block text-sm font-semibold mb-1.5">Restaurant name</label>
+      <input id="b-restaurant" required type="text" placeholder="Mama's Kitchen" class="w-full bg-bg border border-hair rounded-full px-5 py-3 text-base focus:outline-none focus:border-amber">
+    </div>
+    <div class="grid sm:grid-cols-2 gap-5">
+      <div>
+        <label for="b-phone" class="block text-sm font-semibold mb-1.5">Phone</label>
+        <input id="b-phone" type="tel" autocomplete="tel" placeholder="(555) 555-5555" class="w-full bg-bg border border-hair rounded-full px-5 py-3 text-base focus:outline-none focus:border-amber">
+      </div>
+      <div>
+        <label for="b-email" class="block text-sm font-semibold mb-1.5">Email</label>
+        <input id="b-email" type="email" autocomplete="email" placeholder="you@restaurant.com" class="w-full bg-bg border border-hair rounded-full px-5 py-3 text-base focus:outline-none focus:border-amber">
+      </div>
+    </div>
+    <div>
+      <label for="b-time" class="block text-sm font-semibold mb-1.5">Preferred meeting time</label>
+      <input id="b-time" required type="datetime-local" class="w-full bg-bg border border-hair rounded-full px-5 py-3 text-base focus:outline-none focus:border-amber">
+    </div>
+    <button type="submit" class="w-full bg-amber text-bg font-display text-xl py-4 rounded-full hover:bg-amberdark transition">Request my meeting</button>
+    <p id="book-error" class="hidden text-amberdeep text-sm"></p>
+    <div id="book-done" class="hidden bg-sagelight text-sageink rounded-[28px] p-6">
+      <p class="font-display text-2xl mb-1">You're booked in.</p>
+      <p>Thanks! We'll confirm your time by text or email shortly.</p>
+    </div>
+  </form>
+</section>
+
+<footer class="max-w-6xl mx-auto px-6 py-12 flex flex-wrap items-center gap-4 text-sm text-inkmute">
+  <span class="font-display text-lg text-ink">IN<span class="text-sage">THE</span>LOOP</span>
+  <span class="ml-auto">© <span id="yr"></span> InTheLoop</span>
+</footer>
+
+<script src="/js/welcome.js"></script>
+</body>
+</html>

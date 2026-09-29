@@ -108,7 +108,7 @@ app.use(express.json());
 
 // ---- Optional admin password for the CRM itself ----
 // Set ADMIN_PASSWORD in Railway Variables. Guest (check-in) and staff (redeem) pages stay open.
-const PUBLIC_PREFIXES = ['/checkin/', '/redeem/', '/api/public/', '/api/sms/inbound', '/js/checkin.js', '/js/redeem.js', '/favicon'];
+const PUBLIC_PREFIXES = ['/welcome', '/media/', '/js/welcome.js', '/checkin/', '/redeem/', '/api/public/', '/api/sms/inbound', '/js/checkin.js', '/js/redeem.js', '/favicon'];
 app.use((req, res, next) => {
   const pass = process.env.ADMIN_PASSWORD;
   if (!pass || PUBLIC_PREFIXES.some((p) => req.path.startsWith(p))) return next();
@@ -126,6 +126,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // The public check-in page a QR code / NFC tag points to: /checkin/<restaurantId>
 app.get('/checkin/:restaurantId', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'checkin.html'));
+});
+
+// Public landing page with the VSL + booking form: /welcome
+app.get('/welcome', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'welcome.html'));
 });
 
 // Staff-only redeem page (protected by the restaurant's 4-digit staff PIN): /redeem/<restaurantId>
@@ -332,6 +337,45 @@ app.post('/api/public/checkin', async (req, res) => {
     offer: restaurant.currentOffer,
     restaurantName: restaurant.restaurantName,
   });
+});
+
+// Landing-page booking form -> becomes a New Lead in the CRM pipeline
+app.post('/api/public/book', (req, res) => {
+  const db = readDB();
+  const restaurantName = String(req.body.restaurantName || '').trim().slice(0, 120);
+  const phone = String(req.body.phone || '').trim().slice(0, 40);
+  const email = normalizeEmail(req.body.email);
+  const preferredTime = String(req.body.preferredTime || '').trim().slice(0, 40);
+  if (!restaurantName) return res.status(400).json({ error: 'Please add your restaurant name.' });
+  if (!phone && !email) return res.status(400).json({ error: 'Please add a phone number or email so we can confirm.' });
+  if (req.body.email && !email) return res.status(400).json({ error: 'Please enter a valid email.' });
+  let when = preferredTime;
+  const d = new Date(preferredTime);
+  if (preferredTime && !isNaN(d)) when = d.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+  const now = new Date().toISOString();
+  const lead = {
+    id: crypto.randomUUID(),
+    restaurantName,
+    contactName: '',
+    phone,
+    email,
+    slowestNight: '',
+    currentOffer: '',
+    googleReviewLink: '',
+    stage: STAGES[0],
+    liveSince: null,
+    notes: `Booked a meeting from the landing page. Preferred time: ${when || 'not given'}.`,
+    rewardCode: makeRewardCode(restaurantName, db.leads, null),
+    rewardCounter: 0,
+    staffPin: newStaffPin(),
+    source: 'landing-page',
+    preferredMeetingTime: preferredTime,
+    createdAt: now,
+    updatedAt: now,
+  };
+  db.leads.unshift(lead);
+  writeDB(db);
+  res.status(201).json({ ok: true });
 });
 
 // Staff redeem: requires the restaurant's staff PIN + the guest's Reward ID.
